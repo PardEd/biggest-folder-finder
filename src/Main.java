@@ -1,24 +1,31 @@
 import java.io.File;
+import java.util.concurrent.ForkJoinPool;
 
 public class Main {
 
     public static void main(String[] args) {
-        String folderPath = "c:\\UnitGit";
+
+//        for (int i = 0; i < args.length; i++){
+//            System.out.println(i + " => " + args[i]);
+//        }
+//        System.exit(0);
+
+        ParametersBag bag = new ParametersBag(args);
+
+        String folderPath = bag.getPath();
+        long sizeLimit = bag.getLimit();
+
         File file = new File(folderPath);
-        System.out.println(file.length());
+        Node root = new Node(file, sizeLimit);
 
-        System.out.println(getFolderSize(file));
-    }
+        System.out.println("Непонятный размер: " + file.length());
+        System.out.println();
 
-    public static long getFolderSize(File folder){
-        if (folder.isFile()){
-            return folder.length();
-        }
-        long sum = 0;
-        File[] files = folder.listFiles();
-        for (File file : files){
-            sum += getFolderSize(file);
-        }
-        return sum;
+        FolderSizeCalculators calculators = new FolderSizeCalculators(root);
+        ForkJoinPool pool = new ForkJoinPool();
+        pool.invoke(calculators);
+        System.out.println(root);
     }
 }
+
+
