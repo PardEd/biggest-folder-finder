@@ -4,7 +4,7 @@ import java.util.ArrayList;
 public class Node {
 
     private final File folder;
-    private ArrayList<Node> children;
+    private final ArrayList<Node> children;
     private long size;
     private int level;
     private long limit;
